@@ -1,0 +1,6 @@
+Tasks
+You need to complete and submit the following tasks before the final evaluation:
+1. Implement the programming language and a standard genetic algorithm as specified in the paper.
+2. Reproduce the results(code fragments) given in section 5.1 - 5.3 of the paper.
+3. Plot the average number of iterations required to generate a string with respect to it's length. Infer and comment on the nature of this relationship (linear, non-linear, other, etc) [The averaged results should be from a large number of independant GA instances]
+4. Experiment with different fitness functions and different strategies for selection, crossover and mutation (refer to the class slides). Also try to train using a discrete GA instead of a continuous one. Present your findings in a neat tabular format. 
