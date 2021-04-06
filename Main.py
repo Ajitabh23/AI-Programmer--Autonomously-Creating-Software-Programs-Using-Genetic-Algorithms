@@ -1,3 +1,4 @@
+#jastabh
 #create = make 
 #calulate = compute
 
@@ -43,3 +44,4 @@ def main() :
 
 	while(1) :
 		# steps of GA
+		
