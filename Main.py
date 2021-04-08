@@ -163,7 +163,7 @@ def score_population(programs, scores, Interpreter &bf) :
             worst_index = i
             worst_score = scores[i]
     
-    return best_program;
+    return best_program
     
 def compute_total_score(scores) :
     #returns a double
@@ -180,15 +180,82 @@ def select_parent(programs, scores, other_parent = "") :
     # Selects a parent to mate using fitness proportionate selection.
     #Basically, the more fit a program is, the more likely it is to be selected.
     # We have to implement roulette wheel in this function, the writer has not implemented it.
+
+    #// Holds each program's chance of being selected (a # between 0 and 1).
+    program_chances = [0]*POP_SIZE  
+    score_total = pop_score_total(scores)
+    rand_val = random.random(0.0, 1.0)
+
+    for i in range(0, POP_SIZE):
+    
+        #// Cast i to int so when we go to subtract 1, if i is 0 it doesn't overflow (as an unsigned int can't be negative).
+        prev_chance = (((i) - 1) < 0) ? 0 : program_chances[i - 1]
+
+        """/* We add the previous program's chance to this program's chance because that is its range of being selected.
+           The higher the fitness score, the bigger this program's range is. */"""
+        #Why are we adding previous program's chance to this program's chance??
+        program_chances[i] = (scores[i] / score_total) + (prev_chance)
+
+        #// Need to subtract a small amount from rand_val due to floating-point precision errors. Without it, equality check could fail.
+        if program_chances[i] >= (rand_val - 0.001) && (programs[i] != other_parent) :
+        	return programs[i]
+    
+
+    """If the other parent was the last program in the list, we might get here.
+       In that case, just return the 1st program. */"""
+    return programs[0]
+
  
 def mutate(child):
     # return a string (a child which has been mutated). Gets a string child as input
     # We have to write our own code for mutaion. Because we want it to be simple
     # But we can have a look at the writers code. 
+    #Loop through each command and randomly decide to mutate it based on the mutation rate.
+    for i in range(0, len(child)):
+    
+        if MUTATION_RATE >= random.random(0.0, 1.0):
+        
+            mutation_type = get_random_int(1, NUM_MUTATIONS)
+           
+            if mutation_type ==1:
+            	mutate_instruction(child, i)
+            elif mutation_type ==2:
+                add_instruction(child, i)
+            elif mutation_type ==3:
+                remove_instruction(child, i)
 
-def crossover(genome1, genome2, children) :
-    # returns nothing
+    return child
+
+def crossover(genome1, genome2) :
+    # returns 2 strings (children)
     #Performs crossover between two parents to produce two children.
+    # We need to find which program is longest.
+    min_str = (len(genome1)< len(genome2)) ? genome1 : genome2
+    max_str = (len(genome1) >= len(genome2)) ? genome1 : genome2
+
+    #Determine a crossover point at random.
+    crosspoint = random.randint(1, len(max_str) - 1)
+
+    #Find the substring of the program after the crossover point
+    max_str_contrib = max_str[crosspoint:]
+
+    #Then erase after that point
+    max_str = max_str[:crosspoint]
+
+    """/* If the cross-over point is less than the length of the smaller program, then we need to combine part of it with the larger program.
+       If not, then we do nothing and just take part of the larger program and add it to it. */"""
+    if crosspoint <= len(min_str):
+        max_str += min_str[crosspoint:]
+        min_str[:crosspoint]
+    
+
+    #Add the 2nd part of the larger program to the smaller program.
+    min_str += max_str_contrib
+
+    #Call the mutate function on the children which has a small chance of actually causing a mutation.
+    children1 = mutate(min_str)
+    children2 = mutate(max_str)
+    return children1, children2
 
 def genome_exists(genome, genomes) :
 	#returns a bool. Tells whether or not the Genome exists in the pool or not 
@@ -225,7 +292,7 @@ def main() :
     #Just used to have the program keep searching after a match is found.
     keep_going = false  
     #to keep track of number of generations 
-    generations = 0;
+    generations = 0
     
 	while(1) :
 		# steps of GA
