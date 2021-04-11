@@ -24,7 +24,7 @@ NUM_CHILDREN = 2
 #Modify any constants below.
 
 #The size of the population. This always remains the same between generations.
-POP_SIZE = 4
+POP_SIZE = 10
 
 #The minimum size a possible program can be.
 MIN_PROGRAM_SIZE = 10
@@ -33,7 +33,7 @@ MIN_PROGRAM_SIZE = 10
 MAX_PROGRAM_SIZE = 500
 
 #The chance of a 'gene' in a child being mutated.
-MUTATION_RATE = 0.08
+MUTATION_RATE = 0.05
 
 #The score an erroneous program receives.
 ERROR_SCORE = 1
@@ -42,7 +42,7 @@ ERROR_SCORE = 1
 LENGTH_PENALTY = 0.001  
 
 #How often to display the best program so far.
-DISPLAY_RATE = 400000
+DISPLAY_RATE = 10000
 
 #These aren't constant because they can be changed by the user.
 GOAL_OUTPUT = "hi"
